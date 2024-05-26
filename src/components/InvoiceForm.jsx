@@ -120,6 +120,23 @@ const InvoiceForm = () => {
     const { productId, productName, productDescription, productPrice } =
       product;
 
+    let currentItems = formData.items;
+    const itemIndex = currentItems.findIndex(
+      (item) => item.itemId === productId
+    );
+
+    if (itemIndex >= 0) {
+      const itemToUpdate = currentItems[itemIndex];
+      itemToUpdate.itemQuantity = parseInt(itemToUpdate.itemQuantity) + 1;
+      itemToUpdate.itemName = productName;
+      itemToUpdate.itemDescription = productDescription;
+      itemToUpdate.itemPrice = productPrice;
+
+      setFormData({
+        ...formData,
+        items: currentItems,
+      });
+    } else {
     const newItem = {
       itemId: productId,
       itemName: productName,
@@ -132,6 +149,9 @@ const InvoiceForm = () => {
       ...formData,
       items: [...formData.items, newItem],
     });
+    }
+
+    handleCalculateTotal();
   };
 
   const handleCalculateTotal = () => {
