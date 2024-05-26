@@ -14,6 +14,7 @@ import { addInvoice, updateInvoice } from "../redux/invoicesSlice";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import generateRandomId from "../utils/generateRandomId";
 import { useInvoiceListData } from "../redux/hooks";
+import ProductItem from "./ProductItem";
 
 const InvoiceForm = () => {
   const dispatch = useDispatch();
@@ -310,6 +311,14 @@ const InvoiceForm = () => {
                 />
               </Col>
             </Row>
+            <ProductItem
+              onProductizedProductEdit={onProductizedProductEdit}
+              onRowAdd={handleProductAdd}
+              onRowDel={handleProductDel}
+              onItemAdd={handleProductAddToItems}
+              currency={formData.currency}
+              products={formData.products}
+            />
             <InvoiceItem
               onItemizedItemEdit={onItemizedItemEdit}
               onRowAdd={handleAddEvent}
