@@ -46,9 +46,7 @@ const ItemRow = (props) => {
     <tr>
       <td style={{ width: "100%" }}>
         <EditableField
-          onItemizedItemEdit={(evt) =>
-            props.onItemizedItemEdit(evt, props.item.itemId)
-          }
+          onChange={(evt) => props.onItemizedItemEdit(evt, props.item.itemId)}
           cellData={{
             type: "text",
             name: "itemName",
@@ -58,9 +56,7 @@ const ItemRow = (props) => {
           }}
         />
         <EditableField
-          onItemizedItemEdit={(evt) =>
-            props.onItemizedItemEdit(evt, props.item.itemId)
-          }
+          onChange={(evt) => props.onItemizedItemEdit(evt, props.item.itemId)}
           cellData={{
             type: "text",
             name: "itemDescription",
@@ -72,9 +68,7 @@ const ItemRow = (props) => {
       </td>
       <td style={{ minWidth: "70px" }}>
         <EditableField
-          onItemizedItemEdit={(evt) =>
-            props.onItemizedItemEdit(evt, props.item.itemId)
-          }
+          onChange={(evt) => props.onItemizedItemEdit(evt, props.item.itemId)}
           cellData={{
             type: "number",
             name: "itemQuantity",
@@ -87,9 +81,7 @@ const ItemRow = (props) => {
       </td>
       <td style={{ minWidth: "130px" }}>
         <EditableField
-          onItemizedItemEdit={(evt) =>
-            props.onItemizedItemEdit(evt, props.item.itemId)
-          }
+          onChange={(evt) => props.onItemizedItemEdit(evt, props.item.itemId)}
           cellData={{
             leading: props.currency,
             type: "number",
