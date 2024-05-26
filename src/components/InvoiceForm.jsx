@@ -184,7 +184,7 @@ const InvoiceForm = () => {
 
   const onProductizedProductEdit = (evt, id) => {
     const updatedProducts = formData.products.map((oldProduct) => {
-      if (oldProduct.itemId === id) {
+      if (oldProduct.productId === id) {
         return { ...oldProduct, [evt.target.name]: evt.target.value };
       }
       return oldProduct;
