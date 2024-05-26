@@ -120,9 +120,9 @@ const InvoiceForm = () => {
     handleCalculateTotal();
   };
 
-  const handleProductDel = (itemToDelete) => {
+  const handleProductDel = (productToDelete) => {
     const updatedProducts = formData.products.filter(
-      (item) => item.itemId !== itemToDelete.itemId
+      (product) => product.productId !== productToDelete.productId
     );
     setFormData({ ...formData, products: updatedProducts });
     handleCalculateTotal();
