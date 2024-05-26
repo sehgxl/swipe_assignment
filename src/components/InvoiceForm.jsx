@@ -133,9 +133,20 @@ const InvoiceForm = () => {
       return product.productId === productToAddId;
     });
 
+    const { productId, productName, productDescription, productPrice } =
+      product;
+
+    const newItem = {
+      itemId: productId,
+      itemName: productName,
+      itemDescription: productDescription,
+      itemPrice: productPrice,
+      itemQuantity: 1,
+    };
+
     setFormData({
       ...formData,
-      items: [...formData.items, product],
+      items: [...formData.items, newItem],
     });
   };
 
