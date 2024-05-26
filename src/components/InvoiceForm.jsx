@@ -128,9 +128,9 @@ const InvoiceForm = () => {
     handleCalculateTotal();
   };
 
-  const handleProductAddToItems = (id) => {
+  const handleProductAddToItems = (productToAddId) => {
     const product = formData.products.find((product) => {
-      return product.id === id;
+      return product.productId === productToAddId;
     });
 
     setFormData({
