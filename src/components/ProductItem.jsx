@@ -58,9 +58,9 @@ const ProductRow = (props) => {
     <tr>
       <td style={{ width: "100%" }}>
         <EditableField
-          onProductizedProductEdit={(evt) =>
-            props.onProductizedProductEdit(evt, productId)
-          }
+          onChange={(evt) => {
+            props.onProductizedProductEdit(evt, productId);
+          }}
           cellData={{
             type: "text",
             name: "productName",
@@ -70,9 +70,7 @@ const ProductRow = (props) => {
           }}
         />
         <EditableField
-          onProductizedProductEdit={(evt) =>
-            props.onProductizedProductEdit(evt, productId)
-          }
+          onChange={(evt) => props.onProductizedProductEdit(evt, productId)}
           cellData={{
             type: "text",
             name: "productDescription",
@@ -84,9 +82,7 @@ const ProductRow = (props) => {
       </td>
       <td style={{ minWidth: "130px" }}>
         <EditableField
-          onProductizedProductEdit={(evt) =>
-            props.onProductizedProductEdit(evt, productId)
-          }
+          onChange={(evt) => props.onProductizedProductEdit(evt, productId)}
           cellData={{
             leading: props.currency,
             type: "number",
