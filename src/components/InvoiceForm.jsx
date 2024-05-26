@@ -104,6 +104,41 @@ const InvoiceForm = () => {
     handleCalculateTotal();
   };
 
+  const handleProductAdd = () => {
+    const id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
+    const newProduct = {
+      itemId: id,
+      itemName: "",
+      itemDescription: "",
+      itemPrice: "1.00",
+      itemQuantity: 1,
+    };
+    setFormData({
+      ...formData,
+      products: [...formData.products, newProduct],
+    });
+    handleCalculateTotal();
+  };
+
+  const handleProductDel = (itemToDelete) => {
+    const updatedProducts = formData.products.filter(
+      (item) => item.itemId !== itemToDelete.itemId
+    );
+    setFormData({ ...formData, products: updatedProducts });
+    handleCalculateTotal();
+  };
+
+  const handleProductAddToItems = (id) => {
+    const product = formData.products.find((product) => {
+      return product.id === id;
+    });
+
+    setFormData({
+      ...formData,
+      items: [...formData.items, product],
+    });
+  };
+
   const handleCalculateTotal = () => {
     setFormData((prevFormData) => {
       let subTotal = 0;
@@ -144,6 +179,18 @@ const InvoiceForm = () => {
     });
 
     setFormData({ ...formData, items: updatedItems });
+    handleCalculateTotal();
+  };
+
+  const onProductizedProductEdit = (evt, id) => {
+    const updatedProducts = formData.products.map((oldProduct) => {
+      if (oldProduct.itemId === id) {
+        return { ...oldProduct, [evt.target.name]: evt.target.value };
+      }
+      return oldProduct;
+    });
+
+    setFormData({ ...formData, products: updatedProducts });
     handleCalculateTotal();
   };
 
