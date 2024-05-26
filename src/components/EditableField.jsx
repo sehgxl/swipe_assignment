@@ -27,7 +27,7 @@ const EditableField = (props) => {
         step={props.cellData.step}
         precision={props.cellData.precision}
         aria-label={props.cellData.name}
-        onChange={props.onItemizedItemEdit}
+        onChange={props.onChange}
         required
       />
     </InputGroup>
