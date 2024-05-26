@@ -55,24 +55,8 @@ const InvoiceForm = () => {
           discountRate: "",
           discountAmount: "0.00",
           currency: "$",
-          products: [
-            {
-              productId: 0,
-              productName: "",
-              productDescription: "",
-              productPrice: "1.00",
-              productQuantity: 1,
-            },
-          ],
-          items: [
-            {
-              itemId: 0,
-              itemName: "",
-              itemDescription: "",
-              itemPrice: "1.00",
-              itemQuantity: 1,
-            },
-          ],
+          products: [],
+          items: [],
         }
   );
 
