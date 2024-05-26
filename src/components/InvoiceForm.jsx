@@ -107,11 +107,11 @@ const InvoiceForm = () => {
   const handleProductAdd = () => {
     const id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
     const newProduct = {
-      itemId: id,
-      itemName: "",
-      itemDescription: "",
-      itemPrice: "1.00",
-      itemQuantity: 1,
+      productId: id,
+      productName: "",
+      productDescription: "",
+      productPrice: "1.00",
+      productQuantity: 1,
     };
     setFormData({
       ...formData,
