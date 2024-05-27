@@ -140,18 +140,18 @@ const InvoiceForm = () => {
         items: currentItems,
       });
     } else {
-    const newItem = {
-      itemId: productId,
-      itemName: productName,
-      itemDescription: productDescription,
-      itemPrice: productPrice,
-      itemQuantity: 1,
-    };
+      const newItem = {
+        itemId: productId,
+        itemName: productName,
+        itemDescription: productDescription,
+        itemPrice: productPrice,
+        itemQuantity: 1,
+      };
 
-    setFormData({
-      ...formData,
-      items: [...formData.items, newItem],
-    });
+      setFormData({
+        ...formData,
+        items: [...formData.items, newItem],
+      });
     }
 
     handleCalculateTotal();
@@ -309,210 +309,234 @@ const InvoiceForm = () => {
             className="my-3"
           >
             <Tab eventKey="invoice" title="Invoice">
-          <Card className="p-4 p-xl-5 my-3 my-xl-4">
-            <div className="d-flex flex-row align-items-start justify-content-between mb-3">
-              <div className="d-flex flex-column">
-                <div className="d-flex flex-column">
-                  <div className="mb-2">
-                    <span className="fw-bold">Current&nbsp;Date:&nbsp;</span>
-                    <span className="current-date">{formData.currentDate}</span>
-                  </div>
-                </div>
-                <div className="d-flex flex-row align-items-center">
-                  <span className="fw-bold d-block me-2">Due&nbsp;Date:</span>
-                  <Form.Control
-                    type="date"
-                    value={formData.dateOfIssue}
-                    name="dateOfIssue"
-                    onChange={(e) => editField(e.target.name, e.target.value)}
-                    style={{ maxWidth: "150px" }}
-                    required
-                  />
+              <Card className="p-4 p-xl-5 my-3 my-xl-4">
+                <div className="d-flex flex-row align-items-start justify-content-between mb-3">
+                  <div className="d-flex flex-column">
+                    <div className="d-flex flex-column">
+                      <div className="mb-2">
+                        <span className="fw-bold">
+                          Current&nbsp;Date:&nbsp;
+                        </span>
+                        <span className="current-date">
+                          {formData.currentDate}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="d-flex flex-row align-items-center">
+                      <span className="fw-bold d-block me-2">
+                        Due&nbsp;Date:
+                      </span>
+                      <Form.Control
+                        type="date"
+                        value={formData.dateOfIssue}
+                        name="dateOfIssue"
+                        onChange={(e) =>
+                          editField(e.target.name, e.target.value)
+                        }
+                        style={{ maxWidth: "150px" }}
+                        required
+                      />
                       <Form.Control.Feedback type="invalid">
                         Please select a due date.
                       </Form.Control.Feedback>
-                </div>
-              </div>
-              <div className="d-flex flex-row align-items-center">
-                <span className="fw-bold me-2">Invoice&nbsp;Number:&nbsp;</span>
-                <Form.Control
-                  type="number"
-                  value={formData.invoiceNumber}
-                  name="invoiceNumber"
-                  onChange={(e) => editField(e.target.name, e.target.value)}
-                  min="1"
-                  style={{ maxWidth: "70px" }}
-                  required
-                />
+                    </div>
+                  </div>
+                  <div className="d-flex flex-row align-items-center">
+                    <span className="fw-bold me-2">
+                      Invoice&nbsp;Number:&nbsp;
+                    </span>
+                    <Form.Control
+                      type="number"
+                      value={formData.invoiceNumber}
+                      name="invoiceNumber"
+                      onChange={(e) => editField(e.target.name, e.target.value)}
+                      min="1"
+                      style={{ maxWidth: "70px" }}
+                      required
+                    />
                     <Form.Control.Feedback type="invalid">
                       Negative values not allowed
                     </Form.Control.Feedback>
-              </div>
-            </div>
-            <hr className="my-4" />
-            <Row className="mb-5">
-              <Col>
-                <Form.Label className="fw-bold">Bill to:</Form.Label>
+                  </div>
+                </div>
+                <hr className="my-4" />
+                <Row className="mb-5">
+                  <Col>
+                    <Form.Label className="fw-bold">Bill to:</Form.Label>
                     <Form.Group>
-                <Form.Control
-                  placeholder="Who is this invoice to?"
-                  rows={3}
-                  value={formData.billTo}
-                  type="text"
-                  name="billTo"
-                  className="my-2"
-                  onChange={(e) => editField(e.target.name, e.target.value)}
-                  autoComplete="name"
-                  required
-                />
+                      <Form.Control
+                        placeholder="Who is this invoice to?"
+                        rows={3}
+                        value={formData.billTo}
+                        type="text"
+                        name="billTo"
+                        className="my-2"
+                        onChange={(e) =>
+                          editField(e.target.name, e.target.value)
+                        }
+                        autoComplete="name"
+                        required
+                      />
                       <Form.Control.Feedback type="invalid">
                         Please enter a name.
                       </Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group>
-                <Form.Control
-                  placeholder="Email address"
-                  value={formData.billToEmail}
-                  type="email"
-                  name="billToEmail"
-                  className="my-2"
-                  onChange={(e) => editField(e.target.name, e.target.value)}
-                  autoComplete="email"
-                  required
-                />
+                      <Form.Control
+                        placeholder="Email address"
+                        value={formData.billToEmail}
+                        type="email"
+                        name="billToEmail"
+                        className="my-2"
+                        onChange={(e) =>
+                          editField(e.target.name, e.target.value)
+                        }
+                        autoComplete="email"
+                        required
+                      />
                       <Form.Control.Feedback type="invalid">
                         Please enter a valid email.
                       </Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group>
-                <Form.Control
-                  placeholder="Billing address"
-                  value={formData.billToAddress}
-                  type="text"
-                  name="billToAddress"
-                  className="my-2"
-                  autoComplete="address"
-                  onChange={(e) => editField(e.target.name, e.target.value)}
-                  required
-                />
+                      <Form.Control
+                        placeholder="Billing address"
+                        value={formData.billToAddress}
+                        type="text"
+                        name="billToAddress"
+                        className="my-2"
+                        autoComplete="address"
+                        onChange={(e) =>
+                          editField(e.target.name, e.target.value)
+                        }
+                        required
+                      />
                       <Form.Control.Feedback type="invalid">
                         Please enter an address.
                       </Form.Control.Feedback>
                     </Form.Group>
-              </Col>
-              <Col>
+                  </Col>
+                  <Col>
                     <Form.Group>
-                <Form.Label className="fw-bold">Bill from:</Form.Label>
-                <Form.Control
-                  placeholder="Who is this invoice from?"
-                  rows={3}
-                  value={formData.billFrom}
-                  type="text"
-                  name="billFrom"
-                  className="my-2"
-                  onChange={(e) => editField(e.target.name, e.target.value)}
-                  autoComplete="name"
-                  required
-                />
+                      <Form.Label className="fw-bold">Bill from:</Form.Label>
+                      <Form.Control
+                        placeholder="Who is this invoice from?"
+                        rows={3}
+                        value={formData.billFrom}
+                        type="text"
+                        name="billFrom"
+                        className="my-2"
+                        onChange={(e) =>
+                          editField(e.target.name, e.target.value)
+                        }
+                        autoComplete="name"
+                        required
+                      />
                       <Form.Control.Feedback type="invalid">
                         Please enter a name.
                       </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group>
-                <Form.Control
-                  placeholder="Email address"
-                  value={formData.billFromEmail}
-                  type="email"
-                  name="billFromEmail"
-                  className="my-2"
-                  onChange={(e) => editField(e.target.name, e.target.value)}
-                  autoComplete="email"
-                  required
-                />
+                      <Form.Control
+                        placeholder="Email address"
+                        value={formData.billFromEmail}
+                        type="email"
+                        name="billFromEmail"
+                        className="my-2"
+                        onChange={(e) =>
+                          editField(e.target.name, e.target.value)
+                        }
+                        autoComplete="email"
+                        required
+                      />
                       <Form.Control.Feedback type="invalid">
                         Please enter a valid email.
                       </Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group>
-                <Form.Control
-                  placeholder="Billing address"
-                  value={formData.billFromAddress}
-                  type="text"
-                  name="billFromAddress"
-                  className="my-2"
-                  autoComplete="address"
-                  onChange={(e) => editField(e.target.name, e.target.value)}
-                  required
-                />
+                      <Form.Control
+                        placeholder="Billing address"
+                        value={formData.billFromAddress}
+                        type="text"
+                        name="billFromAddress"
+                        className="my-2"
+                        autoComplete="address"
+                        onChange={(e) =>
+                          editField(e.target.name, e.target.value)
+                        }
+                        required
+                      />
                       <Form.Control.Feedback type="invalid">
                         Please enter an address.
                       </Form.Control.Feedback>
                     </Form.Group>
-              </Col>
-            </Row>
+                  </Col>
+                </Row>
 
-            <InvoiceItem
-              onItemizedItemEdit={onItemizedItemEdit}
-              onRowAdd={handleAddEvent}
-              onRowDel={handleRowDel}
-              currency={formData.currency}
-              items={formData.items}
-            />
-            <Row className="mt-4 justify-content-end">
-              <Col lg={6}>
-                <div className="d-flex flex-row align-items-start justify-content-between">
-                  <span className="fw-bold">Subtotal:</span>
-                  <span>
-                    {formData.currency}
-                    {formData.subTotal}
-                  </span>
-                </div>
-                <div className="d-flex flex-row align-items-start justify-content-between mt-2">
-                  <span className="fw-bold">Discount:</span>
-                  <span>
-                    <span className="small">
-                      ({formData.discountRate || 0}%)
-                    </span>
-                    {formData.currency}
-                    {formData.discountAmount || 0}
-                  </span>
-                </div>
-                <div className="d-flex flex-row align-items-start justify-content-between mt-2">
-                  <span className="fw-bold">Tax:</span>
-                  <span>
-                    <span className="small">({formData.taxRate || 0}%)</span>
-                    {formData.currency}
-                    {formData.taxAmount || 0}
-                  </span>
-                </div>
-                <hr />
-                <div
-                  className="d-flex flex-row align-items-start justify-content-between"
-                  style={{ fontSize: "1.125rem" }}
-                >
-                  <span className="fw-bold">Total:</span>
-                  <span className="fw-bold">
-                    {formData.currency}
-                    {formData.total || 0}
-                  </span>
-                </div>
-              </Col>
-            </Row>
-            <hr className="my-4" />
-            <Form.Label className="fw-bold">Notes:</Form.Label>
-            <Form.Control
-              placeholder="Thanks for your business!"
-              name="notes"
-              value={formData.notes}
-              onChange={(e) => editField(e.target.name, e.target.value)}
-              as="textarea"
-              className="my-2"
-              rows={1}
-            />
-          </Card>
+                <InvoiceItem
+                  onItemizedItemEdit={onItemizedItemEdit}
+                  onRowAdd={handleAddEvent}
+                  onRowDel={handleRowDel}
+                  currency={formData.currency}
+                  items={formData.items}
+                />
+                <Row className="mt-4 justify-content-end">
+                  <Col lg={6}>
+                    <div className="d-flex flex-row align-items-start justify-content-between">
+                      <span className="fw-bold">Subtotal:</span>
+                      <span>
+                        {formData.currency}
+                        {formData.subTotal}
+                      </span>
+                    </div>
+                    <div className="d-flex flex-row align-items-start justify-content-between mt-2">
+                      <span className="fw-bold">Discount:</span>
+                      <span>
+                        <span className="small">
+                          ({formData.discountRate || 0}%)
+                        </span>
+                        {formData.currency}
+                        {formData.discountAmount || 0}
+                      </span>
+                    </div>
+                    <div className="d-flex flex-row align-items-start justify-content-between mt-2">
+                      <span className="fw-bold">Tax:</span>
+                      <span>
+                        <span className="small">
+                          ({formData.taxRate || 0}%)
+                        </span>
+                        {formData.currency}
+                        {formData.taxAmount || 0}
+                      </span>
+                    </div>
+                    <hr />
+                    <div
+                      className="d-flex flex-row align-items-start justify-content-between"
+                      style={{ fontSize: "1.125rem" }}
+                    >
+                      <span className="fw-bold">Total:</span>
+                      <span className="fw-bold">
+                        {formData.currency}
+                        {formData.total || 0}
+                      </span>
+                    </div>
+                  </Col>
+                </Row>
+                <hr className="my-4" />
+                <Form.Label className="fw-bold">Notes:</Form.Label>
+                <Form.Control
+                  placeholder="Thanks for your business!"
+                  name="notes"
+                  value={formData.notes}
+                  onChange={(e) => editField(e.target.name, e.target.value)}
+                  as="textarea"
+                  className="my-2"
+                  rows={1}
+                />
+              </Card>
             </Tab>
             <Tab eventKey="products" title="Products">
               <Card className="p-4 p-xl-5 my-3 my-xl-4">
