@@ -70,6 +70,39 @@ const InvoiceForm = () => {
           items: [],
         }
   );
+  const [currencyList, setCurrencyList] = useState({
+    currencyExchangeData: {},
+    currencyData: {},
+  });
+
+  const getCurrencyInformation = async () => {
+    const res = await Promise.all([
+      fetch("https://api.freecurrencyapi.com/v1/latest?base_currency=USD", {
+        headers: {
+          apikey: process.env.REACT_APP_CURRENCY_API_KEY,
+        },
+      }),
+      fetch("https://api.freecurrencyapi.com/v1/currencies", {
+        headers: {
+          apikey: process.env.REACT_APP_CURRENCY_API_KEY,
+        },
+      }),
+    ]);
+
+    const currencyExchangeData = await res[0].json();
+    const currencyData = await res[1].json();
+
+    setCurrencyList((prev) => ({
+      ...prev,
+      currencyExchangeData: currencyExchangeData.data,
+      currencyData: currencyData.data,
+    }));
+  };
+
+  useEffect(() => {
+    getCurrencyInformation();
+  }, []);
+
   const invoiceForm = useRef();
   useEffect(() => {
     handleCalculateTotal();
