@@ -108,10 +108,7 @@ const InvoiceForm = () => {
   };
 
   const handleProductDel = (productToDelete) => {
-    const updatedProducts = formData.products.filter(
-      (product) => product.productId !== productToDelete.productId
-    );
-    setFormData({ ...formData, products: updatedProducts });
+    dispatch(deleteProduct(productToDelete.productId));
     handleCalculateTotal();
   };
 
