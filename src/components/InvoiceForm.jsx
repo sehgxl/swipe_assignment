@@ -113,7 +113,7 @@ const InvoiceForm = () => {
   };
 
   const handleProductAddToItems = (productToAddId) => {
-    const product = formData.products.find((product) => {
+    const product = productsList.find((product) => {
       return product.productId === productToAddId;
     });
 
