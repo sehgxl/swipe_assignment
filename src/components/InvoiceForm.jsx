@@ -13,8 +13,13 @@ import { useDispatch } from "react-redux";
 import { addInvoice, updateInvoice } from "../redux/invoicesSlice";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import generateRandomId from "../utils/generateRandomId";
-import { useInvoiceListData } from "../redux/hooks";
+import { useInvoiceListData, useProductsListData } from "../redux/hooks";
 import ProductItem from "./ProductItem";
+import {
+  addProduct,
+  updateProduct,
+  deleteProduct,
+} from "../redux/ProductsSlice";
 
 const InvoiceForm = () => {
   const dispatch = useDispatch();
@@ -27,6 +32,7 @@ const InvoiceForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [copyId, setCopyId] = useState("");
   const { getOneInvoice, listSize } = useInvoiceListData();
+  const { productsList, productListSize } = useProductsListData();
   const [formData, setFormData] = useState(
     isEdit
       ? getOneInvoice(params.id)
