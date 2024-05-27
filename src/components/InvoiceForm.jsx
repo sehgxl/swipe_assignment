@@ -20,6 +20,8 @@ import {
   updateProduct,
   deleteProduct,
 } from "../redux/ProductsSlice";
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
 
 const InvoiceForm = () => {
   const dispatch = useDispatch();
@@ -28,6 +30,7 @@ const InvoiceForm = () => {
   const navigate = useNavigate();
   const isCopy = location.pathname.includes("create");
   const isEdit = location.pathname.includes("edit");
+  const [currentTab, setCurrentTab] = useState("invoice");
 
   const [isOpen, setIsOpen] = useState(false);
   const [copyId, setCopyId] = useState("");
@@ -269,6 +272,13 @@ const InvoiceForm = () => {
 
       <Row>
         <Col md={8} lg={9}>
+          <Tabs
+            activeKey={currentTab}
+            id="uncontrolled-tab-example"
+            onSelect={(k) => setCurrentTab(k)}
+            className="my-3"
+          >
+            <Tab eventKey="invoice" title="Invoice">
           <Card className="p-4 p-xl-5 my-3 my-xl-4">
             <div className="d-flex flex-row align-items-start justify-content-between mb-3">
               <div className="d-flex flex-column">
@@ -374,14 +384,7 @@ const InvoiceForm = () => {
                 />
               </Col>
             </Row>
-            <ProductItem
-              onProductizedProductEdit={onProductizedProductEdit}
-              onRowAdd={handleProductAdd}
-              onRowDel={handleProductDel}
-              onItemAdd={handleProductAddToItems}
-              currency={formData.currency}
-              products={formData.products}
-            />
+
             <InvoiceItem
               onItemizedItemEdit={onItemizedItemEdit}
               onRowAdd={handleAddEvent}
@@ -441,6 +444,20 @@ const InvoiceForm = () => {
               rows={1}
             />
           </Card>
+            </Tab>
+            <Tab eventKey="products" title="Products">
+              <Card className="p-4 p-xl-5 my-3 my-xl-4">
+                <ProductItem
+                  onProductizedProductEdit={onProductizedProductEdit}
+                  onRowAdd={handleProductAdd}
+                  onRowDel={handleProductDel}
+                  onItemAdd={handleProductAddToItems}
+                  currency={formData.currency}
+                  products={productsList}
+                />
+              </Card>
+            </Tab>
+          </Tabs>
         </Col>
         <Col md={4} lg={3}>
           <div className="sticky-top pt-md-3 pt-xl-4">
