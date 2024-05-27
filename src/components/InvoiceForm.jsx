@@ -525,7 +525,7 @@ const InvoiceForm = () => {
                   onItemizedItemEdit={onItemizedItemEdit}
                   onRowAdd={handleAddEvent}
                   onRowDel={handleRowDel}
-                  currency={formData.currency}
+                  currency={formData.currency.currencySymbol}
                   items={formData.items}
                 />
                 <Row className="mt-4 justify-content-end">
@@ -533,7 +533,7 @@ const InvoiceForm = () => {
                     <div className="d-flex flex-row align-items-start justify-content-between">
                       <span className="fw-bold">Subtotal:</span>
                       <span>
-                        {formData.currency}
+                        {formData.currency.currencySymbol}
                         {formData.subTotal}
                       </span>
                     </div>
@@ -543,7 +543,7 @@ const InvoiceForm = () => {
                         <span className="small">
                           ({formData.discountRate || 0}%)
                         </span>
-                        {formData.currency}
+                        {formData.currency.currencySymbol}
                         {formData.discountAmount || 0}
                       </span>
                     </div>
@@ -553,7 +553,7 @@ const InvoiceForm = () => {
                         <span className="small">
                           ({formData.taxRate || 0}%)
                         </span>
-                        {formData.currency}
+                        {formData.currency.currencySymbol}
                         {formData.taxAmount || 0}
                       </span>
                     </div>
@@ -564,7 +564,7 @@ const InvoiceForm = () => {
                     >
                       <span className="fw-bold">Total:</span>
                       <span className="fw-bold">
-                        {formData.currency}
+                        {formData.currency.currencySymbol}
                         {formData.total || 0}
                       </span>
                     </div>
@@ -590,7 +590,7 @@ const InvoiceForm = () => {
                   onRowAdd={handleProductAdd}
                   onRowDel={handleProductDel}
                   onItemAdd={handleProductAddToItems}
-                  currency={formData.currency}
+                  currency={formData.currency.currencySymbol}
                   products={productsList}
                 />
               </Card>
@@ -615,7 +615,7 @@ const InvoiceForm = () => {
               info={{
                 isOpen,
                 id: formData.id,
-                currency: formData.currency,
+                currency: formData.currency.currencySymbol,
                 currentDate: formData.currentDate,
                 invoiceNumber: formData.invoiceNumber,
                 dateOfIssue: formData.dateOfIssue,
@@ -634,7 +634,7 @@ const InvoiceForm = () => {
                 discountAmount: formData.discountAmount,
               }}
               items={formData.items}
-              currency={formData.currency}
+              currency={formData.currency.currencySymbol}
               subTotal={formData.subTotal}
               taxAmount={formData.taxAmount}
               discountAmount={formData.discountAmount}
