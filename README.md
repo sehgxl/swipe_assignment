@@ -38,3 +38,8 @@ npm run dev
 - [video-link]()
 
 ## 📸 Screenshots
+
+![screenshot-rocks (4)](https://github.com/sehgxl/swipe_assignment/assets/83122406/6072b1ac-40fb-49da-bbb5-11d19b7281b3)
+
+![screenshot-rocks (5)](https://github.com/sehgxl/swipe_assignment/assets/83122406/3aa22431-d4b5-42e6-b7b8-09f1ce2734aa)
+
