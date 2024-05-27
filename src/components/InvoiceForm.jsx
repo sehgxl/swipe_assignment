@@ -264,6 +264,7 @@ const InvoiceForm = () => {
 
   const onCurrencyChange = (selectedOption) => {
     setFormData({ ...formData, currency: selectedOption.currency });
+    handleCalculateTotal();
   };
 
   const openModal = (event) => {
