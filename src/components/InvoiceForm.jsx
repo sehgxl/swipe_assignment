@@ -1,191 +1,104 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link, useParams, useLocation } from "react-router-dom";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import Card from "react-bootstrap/Card";
-import InvoiceItem from "./InvoiceItem";
+
 import { BiArrowBack } from "react-icons/bi";
-import { useDispatch } from "react-redux";
-import { Link, useParams, useLocation } from "react-router-dom";
+
 import generateRandomId from "../utils/generateRandomId";
-import { useInvoiceListData, useProductsListData } from "../redux/hooks";
-import ProductItem from "./ProductItem";
-import {
-  addProduct,
-  updateProduct,
-  deleteProduct,
-} from "../redux/ProductsSlice";
-import Tab from "react-bootstrap/Tab";
-import Tabs from "react-bootstrap/Tabs";
+
+import { useInvoiceListData } from "../redux/hooks";
+
 import RightSidePanel from "./RightSidePanel";
+import InvoiceContainer from "./InvoiceContainer";
+
+import { CURRENCY_EXCHANGE_API, CURRENCY_API } from "../constants";
 
 const InvoiceForm = () => {
-  const dispatch = useDispatch();
   const params = useParams();
   const location = useLocation();
+  const { getOneInvoice, listSize } = useInvoiceListData();
+
   const isCopy = location.pathname.includes("create");
   const isEdit = location.pathname.includes("edit");
-  const [currentTab, setCurrentTab] = useState("invoice");
+
+  const formDataInitialState = isEdit
+    ? getOneInvoice(params.id)
+    : isCopy && params.id
+    ? {
+        ...getOneInvoice(params.id),
+        id: generateRandomId(),
+        invoiceNumber: listSize + 1,
+      }
+    : {
+        id: generateRandomId(),
+        currentDate: new Date().toLocaleDateString(),
+        invoiceNumber: listSize + 1,
+        dateOfIssue: "",
+        billTo: "",
+        billToEmail: "",
+        billToAddress: "",
+        billFrom: "",
+        billFromEmail: "",
+        billFromAddress: "",
+        notes: "",
+        total: "0.00",
+        subTotal: "0.00",
+        taxRate: "",
+        taxAmount: "0.00",
+        discountRate: "",
+        discountAmount: "0.00",
+        currency: {
+          currencyCode: "USD",
+          currencySymbol: "$",
+        },
+        items: [],
+      };
 
   const [isOpen, setIsOpen] = useState(false);
-  const { getOneInvoice, listSize } = useInvoiceListData();
-  const { productsList } = useProductsListData();
-  const [formData, setFormData] = useState(
-    isEdit
-      ? getOneInvoice(params.id)
-      : isCopy && params.id
-      ? {
-          ...getOneInvoice(params.id),
-          id: generateRandomId(),
-          invoiceNumber: listSize + 1,
-        }
-      : {
-          id: generateRandomId(),
-          currentDate: new Date().toLocaleDateString(),
-          invoiceNumber: listSize + 1,
-          dateOfIssue: "",
-          billTo: "",
-          billToEmail: "",
-          billToAddress: "",
-          billFrom: "",
-          billFromEmail: "",
-          billFromAddress: "",
-          notes: "",
-          total: "0.00",
-          subTotal: "0.00",
-          taxRate: "",
-          taxAmount: "0.00",
-          discountRate: "",
-          discountAmount: "0.00",
-          currency: {
-            currencyCode: "USD",
-            currencySymbol: "$",
-          },
-          items: [],
-        }
-  );
+  const [formData, setFormData] = useState(formDataInitialState);
   const [currencyList, setCurrencyList] = useState({
     currencyExchangeData: {},
     currencyData: {},
   });
+  const [validated, setValidated] = useState(false);
 
-  const getCurrencyInformation = async () => {
-    const res = await Promise.all([
-      fetch("https://api.freecurrencyapi.com/v1/latest?base_currency=USD", {
-        headers: {
-          apikey: process.env.REACT_APP_CURRENCY_API_KEY,
-        },
-      }),
-      fetch("https://api.freecurrencyapi.com/v1/currencies", {
-        headers: {
-          apikey: process.env.REACT_APP_CURRENCY_API_KEY,
-        },
-      }),
-    ]);
-
-    const currencyExchangeData = await res[0].json();
-    const currencyData = await res[1].json();
-
-    setCurrencyList((prev) => ({
-      ...prev,
-      currencyExchangeData: currencyExchangeData.data,
-      currencyData: currencyData.data,
-    }));
-  };
+  const invoiceForm = useRef();
 
   useEffect(() => {
     getCurrencyInformation();
-  }, []);
-
-  const invoiceForm = useRef();
-  useEffect(() => {
     handleCalculateTotal();
   }, []);
 
-  const handleRowDel = (itemToDelete) => {
-    const updatedItems = formData.items.filter(
-      (item) => item.itemId !== itemToDelete.itemId
-    );
-    setFormData({ ...formData, items: updatedItems });
-    handleCalculateTotal();
-  };
+  const getCurrencyInformation = async () => {
+    try {
+      const [currencyExchangeResponse, currencyResponse] = await Promise.all([
+        fetch(CURRENCY_EXCHANGE_API, {
+          headers: {
+            apikey: process.env.REACT_APP_CURRENCY_API_KEY,
+          },
+        }),
+        fetch(CURRENCY_API, {
+          headers: {
+            apikey: process.env.REACT_APP_CURRENCY_API_KEY,
+          },
+        }),
+      ]);
 
-  const handleAddEvent = () => {
-    const id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
-    const newItem = {
-      itemId: id,
-      itemName: "",
-      itemDescription: "",
-      itemPrice: "1.00",
-      itemQuantity: 1,
-    };
-    setFormData({
-      ...formData,
-      items: [...formData.items, newItem],
-    });
-    handleCalculateTotal();
-  };
+      const currencyExchangeData = await currencyExchangeResponse.json();
+      const currencyData = await currencyResponse.json();
 
-  const handleProductAdd = () => {
-    const id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
-    const newProduct = {
-      productId: id,
-      productName: "",
-      productDescription: "",
-      productPrice: "1.00",
-      productQuantity: 1,
-    };
-
-    dispatch(addProduct(newProduct));
-    handleCalculateTotal();
-  };
-
-  const handleProductDel = (productToDelete) => {
-    dispatch(deleteProduct(productToDelete.productId));
-    handleCalculateTotal();
-  };
-
-  const handleProductAddToItems = (productToAddId) => {
-    const product = productsList.find((product) => {
-      return product.productId === productToAddId;
-    });
-
-    const { productId, productName, productDescription, productPrice } =
-      product;
-
-    let currentItems = formData.items;
-    const itemIndex = currentItems.findIndex(
-      (item) => item.itemId === productId
-    );
-
-    if (itemIndex >= 0) {
-      const itemToUpdate = currentItems[itemIndex];
-      itemToUpdate.itemQuantity = parseInt(itemToUpdate.itemQuantity) + 1;
-      itemToUpdate.itemName = productName;
-      itemToUpdate.itemDescription = productDescription;
-      itemToUpdate.itemPrice = productPrice;
-
-      setFormData({
-        ...formData,
-        items: currentItems,
-      });
-    } else {
-      const newItem = {
-        itemId: productId,
-        itemName: productName,
-        itemDescription: productDescription,
-        itemPrice: productPrice,
-        itemQuantity: 1,
-      };
-
-      setFormData({
-        ...formData,
-        items: [...formData.items, newItem],
-      });
+      setCurrencyList((prev) => ({
+        ...prev,
+        currencyExchangeData: currencyExchangeData.data,
+        currencyData: currencyData.data,
+      }));
+    } catch (error) {
+      console.error("Error fetching currency information:", error);
     }
-
-    handleCalculateTotal();
   };
 
   const handleCalculateTotal = () => {
@@ -227,31 +140,6 @@ const InvoiceForm = () => {
     });
   };
 
-  const onItemizedItemEdit = (evt, id) => {
-    const updatedItems = formData.items.map((oldItem) => {
-      if (oldItem.itemId === id) {
-        return { ...oldItem, [evt.target.name]: evt.target.value };
-      }
-      return oldItem;
-    });
-
-    setFormData({ ...formData, items: updatedItems });
-    handleCalculateTotal();
-  };
-
-  const onProductizedProductEdit = (evt, id) => {
-    dispatch(
-      updateProduct({
-        productId: id,
-        updatedProduct: {
-          [evt.target.name]: evt.target.value,
-        },
-      })
-    );
-
-    handleCalculateTotal();
-  };
-
   const editField = (name, value) => {
     setFormData({ ...formData, [name]: value });
     handleCalculateTotal();
@@ -262,8 +150,6 @@ const InvoiceForm = () => {
     handleCalculateTotal();
     setIsOpen(true);
   };
-
-  const [validated, setValidated] = useState(false);
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
@@ -303,255 +189,14 @@ const InvoiceForm = () => {
 
       <Row>
         <Col md={8} lg={9}>
-          <Tabs
-            activeKey={currentTab}
-            id="uncontrolled-tab-example"
-            onSelect={(k) => setCurrentTab(k)}
-            className="my-3"
-          >
-            <Tab eventKey="invoice" title="Invoice">
-              <Card className="p-4 p-xl-5 my-3 my-xl-4">
-                <div className="d-flex flex-row align-items-start justify-content-between mb-3">
-                  <div className="d-flex flex-column">
-                    <div className="d-flex flex-column">
-                      <div className="mb-2">
-                        <span className="fw-bold">
-                          Current&nbsp;Date:&nbsp;
-                        </span>
-                        <span className="current-date">
-                          {formData.currentDate}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="d-flex flex-row align-items-center">
-                      <span className="fw-bold d-block me-2">
-                        Due&nbsp;Date:
-                      </span>
-                      <Form.Control
-                        type="date"
-                        value={formData.dateOfIssue}
-                        name="dateOfIssue"
-                        onChange={(e) =>
-                          editField(e.target.name, e.target.value)
-                        }
-                        style={{ maxWidth: "150px" }}
-                        required
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Please select a due date.
-                      </Form.Control.Feedback>
-                    </div>
-                  </div>
-                  <div className="d-flex flex-row align-items-center">
-                    <span className="fw-bold me-2">
-                      Invoice&nbsp;Number:&nbsp;
-                    </span>
-                    <Form.Control
-                      type="number"
-                      value={formData.invoiceNumber}
-                      name="invoiceNumber"
-                      onChange={(e) => editField(e.target.name, e.target.value)}
-                      min="1"
-                      style={{ maxWidth: "70px" }}
-                      required
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Negative values not allowed
-                    </Form.Control.Feedback>
-                  </div>
-                </div>
-                <hr className="my-4" />
-                <Row className="mb-5">
-                  <Col>
-                    <Form.Label className="fw-bold">Bill to:</Form.Label>
-                    <Form.Group>
-                      <Form.Control
-                        placeholder="Who is this invoice to?"
-                        rows={3}
-                        value={formData.billTo}
-                        type="text"
-                        name="billTo"
-                        className="my-2"
-                        onChange={(e) =>
-                          editField(e.target.name, e.target.value)
-                        }
-                        autoComplete="name"
-                        required
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Please enter a name.
-                      </Form.Control.Feedback>
-                    </Form.Group>
-
-                    <Form.Group>
-                      <Form.Control
-                        placeholder="Email address"
-                        value={formData.billToEmail}
-                        type="email"
-                        name="billToEmail"
-                        className="my-2"
-                        onChange={(e) =>
-                          editField(e.target.name, e.target.value)
-                        }
-                        autoComplete="email"
-                        required
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Please enter a valid email.
-                      </Form.Control.Feedback>
-                    </Form.Group>
-
-                    <Form.Group>
-                      <Form.Control
-                        placeholder="Billing address"
-                        value={formData.billToAddress}
-                        type="text"
-                        name="billToAddress"
-                        className="my-2"
-                        autoComplete="address"
-                        onChange={(e) =>
-                          editField(e.target.name, e.target.value)
-                        }
-                        required
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Please enter an address.
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group>
-                      <Form.Label className="fw-bold">Bill from:</Form.Label>
-                      <Form.Control
-                        placeholder="Who is this invoice from?"
-                        rows={3}
-                        value={formData.billFrom}
-                        type="text"
-                        name="billFrom"
-                        className="my-2"
-                        onChange={(e) =>
-                          editField(e.target.name, e.target.value)
-                        }
-                        autoComplete="name"
-                        required
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Please enter a name.
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group>
-                      <Form.Control
-                        placeholder="Email address"
-                        value={formData.billFromEmail}
-                        type="email"
-                        name="billFromEmail"
-                        className="my-2"
-                        onChange={(e) =>
-                          editField(e.target.name, e.target.value)
-                        }
-                        autoComplete="email"
-                        required
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Please enter a valid email.
-                      </Form.Control.Feedback>
-                    </Form.Group>
-
-                    <Form.Group>
-                      <Form.Control
-                        placeholder="Billing address"
-                        value={formData.billFromAddress}
-                        type="text"
-                        name="billFromAddress"
-                        className="my-2"
-                        autoComplete="address"
-                        onChange={(e) =>
-                          editField(e.target.name, e.target.value)
-                        }
-                        required
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Please enter an address.
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                <InvoiceItem
-                  onItemizedItemEdit={onItemizedItemEdit}
-                  onRowAdd={handleAddEvent}
-                  onRowDel={handleRowDel}
-                  currency={formData.currency.currencySymbol}
-                  items={formData.items}
-                />
-                <Row className="mt-4 justify-content-end">
-                  <Col lg={6}>
-                    <div className="d-flex flex-row align-items-start justify-content-between">
-                      <span className="fw-bold">Subtotal:</span>
-                      <span>
-                        {formData.currency.currencySymbol}
-                        {formData.subTotal}
-                      </span>
-                    </div>
-                    <div className="d-flex flex-row align-items-start justify-content-between mt-2">
-                      <span className="fw-bold">Discount:</span>
-                      <span>
-                        <span className="small">
-                          ({formData.discountRate || 0}%)
-                        </span>
-                        {formData.currency.currencySymbol}
-                        {formData.discountAmount || 0}
-                      </span>
-                    </div>
-                    <div className="d-flex flex-row align-items-start justify-content-between mt-2">
-                      <span className="fw-bold">Tax:</span>
-                      <span>
-                        <span className="small">
-                          ({formData.taxRate || 0}%)
-                        </span>
-                        {formData.currency.currencySymbol}
-                        {formData.taxAmount || 0}
-                      </span>
-                    </div>
-                    <hr />
-                    <div
-                      className="d-flex flex-row align-items-start justify-content-between"
-                      style={{ fontSize: "1.125rem" }}
-                    >
-                      <span className="fw-bold">Total:</span>
-                      <span className="fw-bold">
-                        {formData.currency.currencySymbol}
-                        {formData.total || 0}
-                      </span>
-                    </div>
-                  </Col>
-                </Row>
-                <hr className="my-4" />
-                <Form.Label className="fw-bold">Notes:</Form.Label>
-                <Form.Control
-                  placeholder="Thanks for your business!"
-                  name="notes"
-                  value={formData.notes}
-                  onChange={(e) => editField(e.target.name, e.target.value)}
-                  as="textarea"
-                  className="my-2"
-                  rows={1}
-                />
-              </Card>
-            </Tab>
-            <Tab eventKey="products" title="Products">
-              <Card className="p-4 p-xl-5 my-3 my-xl-4">
-                <ProductItem
-                  onProductizedProductEdit={onProductizedProductEdit}
-                  onRowAdd={handleProductAdd}
-                  onRowDel={handleProductDel}
-                  onItemAdd={handleProductAddToItems}
-                  currency={formData.currency.currencySymbol}
-                  products={productsList}
-                />
-              </Card>
-            </Tab>
-          </Tabs>
+          <InvoiceContainer
+            InvoiceContainerProps={{
+              formData,
+              editField,
+              setFormData,
+              handleCalculateTotal,
+            }}
+          />
         </Col>
         <Col md={4} lg={3}>
           <RightSidePanel
