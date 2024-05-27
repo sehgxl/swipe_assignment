@@ -66,7 +66,7 @@ const ItemRow = (props) => {
           }}
         />
       </td>
-      <td style={{ minWidth: "70px" }}>
+      <td style={{ minWidth: "80px" }}>
         <EditableField
           onChange={(evt) => props.onItemizedItemEdit(evt, props.item.itemId)}
           cellData={{
