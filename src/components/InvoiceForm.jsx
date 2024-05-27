@@ -70,8 +70,11 @@ const InvoiceForm = () => {
 
   useEffect(() => {
     getCurrencyInformation();
-    handleCalculateTotal();
   }, []);
+
+  useEffect(() => {
+    handleCalculateTotal();
+  }, [currencyList]);
 
   const getCurrencyInformation = async () => {
     try {
