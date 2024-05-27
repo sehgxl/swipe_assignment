@@ -28,7 +28,7 @@ const ProductItem = (props) => {
   ));
 
   return (
-    <div class="mb-5">
+    <div>
       <Table>
         <thead>
           <tr>
