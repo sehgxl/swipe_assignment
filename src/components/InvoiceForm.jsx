@@ -195,6 +195,10 @@ const InvoiceForm = () => {
 
   const handleCalculateTotal = () => {
     setFormData((prevFormData) => {
+      const selectedCurrency = prevFormData.currency.currencyCode;
+      const exchangeRateData = currencyList.currencyExchangeData;
+      const exchangeMultiplier = exchangeRateData[selectedCurrency] ?? 1;
+
       let subTotal = 0;
 
       prevFormData.items.forEach((item) => {
@@ -203,11 +207,15 @@ const InvoiceForm = () => {
       });
 
       const taxAmount = parseFloat(
-        subTotal * (prevFormData.taxRate / 100)
+        subTotal * (prevFormData.taxRate / 100) * exchangeMultiplier
       ).toFixed(2);
+
       const discountAmount = parseFloat(
-        subTotal * (prevFormData.discountRate / 100)
+        subTotal * (prevFormData.discountRate / 100) * exchangeMultiplier
       ).toFixed(2);
+
+      subTotal = (parseFloat(subTotal) * exchangeMultiplier).toFixed(2);
+
       const total = (
         subTotal -
         parseFloat(discountAmount) +
@@ -216,7 +224,7 @@ const InvoiceForm = () => {
 
       return {
         ...prevFormData,
-        subTotal: parseFloat(subTotal).toFixed(2),
+        subTotal,
         taxAmount,
         discountAmount,
         total,
