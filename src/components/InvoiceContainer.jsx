@@ -178,7 +178,7 @@ const InvoiceContainer = (props) => {
                 name="invoiceNumber"
                 onChange={(e) => editField(e.target.name, e.target.value)}
                 min="1"
-                style={{ maxWidth: "70px" }}
+                style={{ maxWidth: "100px" }}
                 required
               />
               <Form.Control.Feedback type="invalid">
