@@ -11,9 +11,11 @@ const invoicesSlice = createSlice({
       return state.filter((invoice) => invoice.id !== action.payload);
     },
     updateInvoice: (state, action) => {
+      const invoiceToFindId = parseInt(action.payload.id)
       const index = state.findIndex(
-        (invoice) => invoice.id === action.payload.id
+        (invoice) => invoice.id === invoiceToFindId
       );
+
       if (index !== -1) {
         state[index] = action.payload.updatedInvoice;
       }
