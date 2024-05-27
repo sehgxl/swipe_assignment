@@ -2,16 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import InvoiceItem from "./InvoiceItem";
-import InvoiceModal from "./InvoiceModal";
 import { BiArrowBack } from "react-icons/bi";
-import InputGroup from "react-bootstrap/InputGroup";
 import { useDispatch } from "react-redux";
-import { addInvoice, updateInvoice } from "../redux/invoicesSlice";
-import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import generateRandomId from "../utils/generateRandomId";
 import { useInvoiceListData, useProductsListData } from "../redux/hooks";
 import ProductItem from "./ProductItem";
@@ -22,18 +18,17 @@ import {
 } from "../redux/ProductsSlice";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+import RightSidePanel from "./RightSidePanel";
 
 const InvoiceForm = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const location = useLocation();
-  const navigate = useNavigate();
   const isCopy = location.pathname.includes("create");
   const isEdit = location.pathname.includes("edit");
   const [currentTab, setCurrentTab] = useState("invoice");
 
   const [isOpen, setIsOpen] = useState(false);
-  const [copyId, setCopyId] = useState("");
   const { getOneInvoice, listSize } = useInvoiceListData();
   const { productsList } = useProductsListData();
   const [formData, setFormData] = useState(
@@ -262,19 +257,10 @@ const InvoiceForm = () => {
     handleCalculateTotal();
   };
 
-  const onCurrencyChange = (selectedOption) => {
-    setFormData({ ...formData, currency: selectedOption.currency });
-    handleCalculateTotal();
-  };
-
   const openModal = (event) => {
     event.preventDefault();
     handleCalculateTotal();
     setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
   };
 
   const [validated, setValidated] = useState(false);
@@ -297,36 +283,6 @@ const InvoiceForm = () => {
 
     setValidated(false);
     return true;
-  };
-
-  const handleAddInvoice = () => {
-    if (!checkValidation()) {
-      return;
-    }
-    if (isEdit) {
-      dispatch(updateInvoice({ id: params.id, updatedInvoice: formData }));
-      alert("Invoice updated successfuly 🥳");
-    } else if (isCopy) {
-      dispatch(addInvoice({ id: generateRandomId(), ...formData }));
-      alert("Invoice added successfuly 🥳");
-    } else {
-      dispatch(addInvoice(formData));
-      alert("Invoice added successfuly 🥳");
-    }
-    navigate("/");
-  };
-
-  const handleCopyInvoice = () => {
-    const recievedInvoice = getOneInvoice(copyId);
-    if (recievedInvoice) {
-      setFormData({
-        ...recievedInvoice,
-        id: formData.id,
-        invoiceNumber: formData.invoiceNumber,
-      });
-    } else {
-      alert("Invoice does not exists!!!!!");
-    }
   };
 
   return (
@@ -598,132 +554,18 @@ const InvoiceForm = () => {
           </Tabs>
         </Col>
         <Col md={4} lg={3}>
-          <div className="sticky-top pt-md-3 pt-xl-4">
-            <Button
-              variant="dark"
-              onClick={handleAddInvoice}
-              className="d-block w-100 mb-2"
-            >
-              {isEdit ? "Update Invoice" : "Add Invoice"}
-            </Button>
-            <Button variant="primary" type="submit" className="d-block w-100">
-              Review Invoice
-            </Button>
-            <InvoiceModal
-              showModal={isOpen}
-              closeModal={closeModal}
-              info={{
-                isOpen,
-                id: formData.id,
-                currency: formData.currency.currencySymbol,
-                currentDate: formData.currentDate,
-                invoiceNumber: formData.invoiceNumber,
-                dateOfIssue: formData.dateOfIssue,
-                billTo: formData.billTo,
-                billToEmail: formData.billToEmail,
-                billToAddress: formData.billToAddress,
-                billFrom: formData.billFrom,
-                billFromEmail: formData.billFromEmail,
-                billFromAddress: formData.billFromAddress,
-                notes: formData.notes,
-                total: formData.total,
-                subTotal: formData.subTotal,
-                taxRate: formData.taxRate,
-                taxAmount: formData.taxAmount,
-                discountRate: formData.discountRate,
-                discountAmount: formData.discountAmount,
-              }}
-              items={formData.items}
-              currency={formData.currency.currencySymbol}
-              subTotal={formData.subTotal}
-              taxAmount={formData.taxAmount}
-              discountAmount={formData.discountAmount}
-              total={formData.total}
-            />
-            <Form.Group className="mb-3">
-              <Form.Label className="fw-bold">Currency:</Form.Label>
-              <Form.Select
-                onChange={(event) => {
-                  const targetValue = event.target.value;
-                  const [currencyCode, currencySymbol] = targetValue.split("_");
-
-                  onCurrencyChange({
-                    currency: {
-                      currencyCode,
-                      currencySymbol,
-                    },
-                  });
-                }}
-                className="btn btn-light my-1"
-                aria-label="Change Currency"
-                value={`${formData.currency.currencyCode}_${formData.currency.currencySymbol}`}
-              >
-                {Object.keys(currencyList.currencyData).map((currency) => {
-                  const currencyData = currencyList.currencyData[currency];
-                  const currencyName = currencyData.name;
-                  const currencyCode = currencyData.code;
-                  const currencySymbol = currencyData.symbol_native;
-                  const optionValue = `${currencyCode}_${currencySymbol}`;
-                  const optionLabel = ` (${currencyCode}) ${currencyName}`;
-                  return <option value={optionValue}>{optionLabel}</option>;
-                })}
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="my-3">
-              <Form.Label className="fw-bold">Tax rate:</Form.Label>
-              <InputGroup className="my-1 flex-nowrap">
-                <Form.Control
-                  name="taxRate"
-                  type="number"
-                  value={formData.taxRate}
-                  onChange={(e) => editField(e.target.name, e.target.value)}
-                  className="bg-white border"
-                  placeholder="0.0"
-                  min="0.00"
-                  step="0.01"
-                  max="100.00"
-                />
-                <InputGroup.Text className="bg-light fw-bold text-secondary small">
-                  %
-                </InputGroup.Text>
-              </InputGroup>
-            </Form.Group>
-            <Form.Group className="my-3">
-              <Form.Label className="fw-bold">Discount rate:</Form.Label>
-              <InputGroup className="my-1 flex-nowrap">
-                <Form.Control
-                  name="discountRate"
-                  type="number"
-                  value={formData.discountRate}
-                  onChange={(e) => editField(e.target.name, e.target.value)}
-                  className="bg-white border"
-                  placeholder="0.0"
-                  min="0.00"
-                  step="0.01"
-                  max="100.00"
-                />
-                <InputGroup.Text className="bg-light fw-bold text-secondary small">
-                  %
-                </InputGroup.Text>
-              </InputGroup>
-            </Form.Group>
-
-            <Form.Control
-              placeholder="Enter Invoice ID"
-              name="copyId"
-              value={copyId}
-              onChange={(e) => setCopyId(e.target.value)}
-              type="text"
-              className="my-2 bg-white border"
-            />
-            <Button
-              variant="primary"
-              onClick={handleCopyInvoice}
-              className="d-block"
-            >
-              Copy Old Invoice
-            </Button>
-          </div>
+          <RightSidePanel
+            RightSidePanelProps={{
+              setFormData,
+              handleCalculateTotal,
+              setIsOpen,
+              checkValidation,
+              formData,
+              isOpen,
+              currencyList,
+              editField,
+            }}
+          />
         </Col>
       </Row>
     </Form>
