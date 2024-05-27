@@ -82,7 +82,7 @@ const ProductRow = (props) => {
           }}
         />
       </td>
-      <td style={{ minWidth: "130px" }}>
+      <td style={{ minWidth: "170px" }}>
         <EditableField
           onChange={(evt) => props.onProductizedProductEdit(evt, productId)}
           cellData={{
