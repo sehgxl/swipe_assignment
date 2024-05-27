@@ -198,14 +198,15 @@ const InvoiceForm = () => {
   };
 
   const onProductizedProductEdit = (evt, id) => {
-    const updatedProducts = formData.products.map((oldProduct) => {
-      if (oldProduct.productId === id) {
-        return { ...oldProduct, [evt.target.name]: evt.target.value };
-      }
-      return oldProduct;
-    });
+    dispatch(
+      updateProduct({
+        productId: id,
+        updatedProduct: {
+          [evt.target.name]: evt.target.value,
+        },
+      })
+    );
 
-    setFormData({ ...formData, products: updatedProducts });
     handleCalculateTotal();
   };
 
