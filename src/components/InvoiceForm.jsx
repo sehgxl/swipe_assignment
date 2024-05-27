@@ -102,10 +102,8 @@ const InvoiceForm = () => {
       productPrice: "1.00",
       productQuantity: 1,
     };
-    setFormData({
-      ...formData,
-      products: [...formData.products, newProduct],
-    });
+
+    dispatch(addProduct(newProduct));
     handleCalculateTotal();
   };
 
