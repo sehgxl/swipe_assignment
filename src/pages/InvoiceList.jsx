@@ -115,7 +115,7 @@ const InvoiceRow = ({ invoice, navigate }) => {
       <td className="fw-normal">{invoice.billTo}</td>
       <td className="fw-normal">{invoice.dateOfIssue}</td>
       <td className="fw-normal">
-        {invoice.currency}
+        {invoice.currency.currencySymbol}
         {invoice.total}
       </td>
       <td style={{ width: "5%" }}>
@@ -145,7 +145,7 @@ const InvoiceRow = ({ invoice, navigate }) => {
         info={{
           isOpen,
           id: invoice.id,
-          currency: invoice.currency,
+          currency: invoice.currency.currencySymbol,
           currentDate: invoice.currentDate,
           invoiceNumber: invoice.invoiceNumber,
           dateOfIssue: invoice.dateOfIssue,
@@ -164,7 +164,7 @@ const InvoiceRow = ({ invoice, navigate }) => {
           discountAmount: invoice.discountAmount,
         }}
         items={invoice.items}
-        currency={invoice.currency}
+        currency={invoice.currency.currencySymbol}
         subTotal={invoice.subTotal}
         taxAmount={invoice.taxAmount}
         discountAmount={invoice.discountAmount}
