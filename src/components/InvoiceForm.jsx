@@ -63,7 +63,10 @@ const InvoiceForm = () => {
           taxAmount: "0.00",
           discountRate: "",
           discountAmount: "0.00",
-          currency: "$",
+          currency: {
+            currencyCode: "USD",
+            currencySymbol: "$",
+          },
           items: [],
         }
   );
