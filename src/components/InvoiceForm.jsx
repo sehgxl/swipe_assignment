@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -35,7 +35,7 @@ const InvoiceForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [copyId, setCopyId] = useState("");
   const { getOneInvoice, listSize } = useInvoiceListData();
-  const { productsList, productListSize } = useProductsListData();
+  const { productsList } = useProductsListData();
   const [formData, setFormData] = useState(
     isEdit
       ? getOneInvoice(params.id)
@@ -67,7 +67,7 @@ const InvoiceForm = () => {
           items: [],
         }
   );
-
+  const invoiceForm = useRef();
   useEffect(() => {
     handleCalculateTotal();
   }, []);
@@ -232,7 +232,32 @@ const InvoiceForm = () => {
     setIsOpen(false);
   };
 
+  const [validated, setValidated] = useState(false);
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (checkValidation()) {
+      openModal(event);
+    }
+  };
+
+  const checkValidation = () => {
+    const form = invoiceForm.current;
+    if (form.checkValidity() === false) {
+      setValidated(true);
+      return false;
+    }
+
+    setValidated(false);
+    return true;
+  };
+
   const handleAddInvoice = () => {
+    if (!checkValidation()) {
+      return;
+    }
     if (isEdit) {
       dispatch(updateInvoice({ id: params.id, updatedInvoice: formData }));
       alert("Invoice updated successfuly 🥳");
@@ -260,7 +285,12 @@ const InvoiceForm = () => {
   };
 
   return (
-    <Form onSubmit={openModal}>
+    <Form
+      ref={invoiceForm}
+      noValidate
+      validated={validated}
+      onSubmit={handleFormSubmit}
+    >
       <div className="d-flex align-items-center">
         <BiArrowBack size={18} />
         <div className="fw-bold mt-1 mx-2 cursor-pointer">
@@ -298,6 +328,9 @@ const InvoiceForm = () => {
                     style={{ maxWidth: "150px" }}
                     required
                   />
+                      <Form.Control.Feedback type="invalid">
+                        Please select a due date.
+                      </Form.Control.Feedback>
                 </div>
               </div>
               <div className="d-flex flex-row align-items-center">
@@ -311,12 +344,16 @@ const InvoiceForm = () => {
                   style={{ maxWidth: "70px" }}
                   required
                 />
+                    <Form.Control.Feedback type="invalid">
+                      Negative values not allowed
+                    </Form.Control.Feedback>
               </div>
             </div>
             <hr className="my-4" />
             <Row className="mb-5">
               <Col>
                 <Form.Label className="fw-bold">Bill to:</Form.Label>
+                    <Form.Group>
                 <Form.Control
                   placeholder="Who is this invoice to?"
                   rows={3}
@@ -328,6 +365,12 @@ const InvoiceForm = () => {
                   autoComplete="name"
                   required
                 />
+                      <Form.Control.Feedback type="invalid">
+                        Please enter a name.
+                      </Form.Control.Feedback>
+                    </Form.Group>
+
+                    <Form.Group>
                 <Form.Control
                   placeholder="Email address"
                   value={formData.billToEmail}
@@ -338,6 +381,12 @@ const InvoiceForm = () => {
                   autoComplete="email"
                   required
                 />
+                      <Form.Control.Feedback type="invalid">
+                        Please enter a valid email.
+                      </Form.Control.Feedback>
+                    </Form.Group>
+
+                    <Form.Group>
                 <Form.Control
                   placeholder="Billing address"
                   value={formData.billToAddress}
@@ -348,8 +397,13 @@ const InvoiceForm = () => {
                   onChange={(e) => editField(e.target.name, e.target.value)}
                   required
                 />
+                      <Form.Control.Feedback type="invalid">
+                        Please enter an address.
+                      </Form.Control.Feedback>
+                    </Form.Group>
               </Col>
               <Col>
+                    <Form.Group>
                 <Form.Label className="fw-bold">Bill from:</Form.Label>
                 <Form.Control
                   placeholder="Who is this invoice from?"
@@ -362,6 +416,11 @@ const InvoiceForm = () => {
                   autoComplete="name"
                   required
                 />
+                      <Form.Control.Feedback type="invalid">
+                        Please enter a name.
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group>
                 <Form.Control
                   placeholder="Email address"
                   value={formData.billFromEmail}
@@ -372,6 +431,12 @@ const InvoiceForm = () => {
                   autoComplete="email"
                   required
                 />
+                      <Form.Control.Feedback type="invalid">
+                        Please enter a valid email.
+                      </Form.Control.Feedback>
+                    </Form.Group>
+
+                    <Form.Group>
                 <Form.Control
                   placeholder="Billing address"
                   value={formData.billFromAddress}
@@ -382,6 +447,10 @@ const InvoiceForm = () => {
                   onChange={(e) => editField(e.target.name, e.target.value)}
                   required
                 />
+                      <Form.Control.Feedback type="invalid">
+                        Please enter an address.
+                      </Form.Control.Feedback>
+                    </Form.Group>
               </Col>
             </Row>
 
