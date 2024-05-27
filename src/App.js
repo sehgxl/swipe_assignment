@@ -8,7 +8,7 @@ import InvoiceList from "./pages/InvoiceList";
 
 const App = () => {
   return (
-    <div className="App d-flex flex-column align-items-center justify-content-center w-100">
+    <div className="App d-flex flex-column align-items-center justify-content-start w-100 pt-5">
       <Container>
         <Routes>
           <Route path="/" element={<InvoiceList />} />
