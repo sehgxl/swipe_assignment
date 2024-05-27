@@ -67,6 +67,7 @@ const ProductRow = (props) => {
             placeholder: "Product name",
             value: productName,
             id: productId,
+            required: false,
           }}
         />
         <EditableField
@@ -77,6 +78,7 @@ const ProductRow = (props) => {
             placeholder: "Product description",
             value: productDescription,
             id: productId,
+            required: false,
           }}
         />
       </td>
@@ -93,6 +95,7 @@ const ProductRow = (props) => {
             textAlign: "text-end",
             value: productPrice,
             id: productId,
+            required: false,
           }}
         />
       </td>
