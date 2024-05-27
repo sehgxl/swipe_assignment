@@ -66,7 +66,7 @@ const ItemRow = (props) => {
           }}
         />
       </td>
-      <td style={{ minWidth: "80px" }}>
+      <td style={{ minWidth: "100px" }}>
         <EditableField
           onChange={(evt) => props.onItemizedItemEdit(evt, props.item.itemId)}
           cellData={{
@@ -79,7 +79,7 @@ const ItemRow = (props) => {
           }}
         />
       </td>
-      <td style={{ minWidth: "130px" }}>
+      <td style={{ minWidth: "180px" }}>
         <EditableField
           onChange={(evt) => props.onItemizedItemEdit(evt, props.item.itemId)}
           cellData={{
