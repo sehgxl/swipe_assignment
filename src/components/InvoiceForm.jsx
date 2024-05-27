@@ -643,20 +643,30 @@ const InvoiceForm = () => {
             <Form.Group className="mb-3">
               <Form.Label className="fw-bold">Currency:</Form.Label>
               <Form.Select
-                onChange={(event) =>
-                  onCurrencyChange({ currency: event.target.value })
-                }
+                onChange={(event) => {
+                  const targetValue = event.target.value;
+                  const [currencyCode, currencySymbol] = targetValue.split("_");
+
+                  onCurrencyChange({
+                    currency: {
+                      currencyCode,
+                      currencySymbol,
+                    },
+                  });
+                }}
                 className="btn btn-light my-1"
                 aria-label="Change Currency"
+                value={`${formData.currency.currencyCode}_${formData.currency.currencySymbol}`}
               >
-                <option value="$">USD (United States Dollar)</option>
-                <option value="£">GBP (British Pound Sterling)</option>
-                <option value="¥">JPY (Japanese Yen)</option>
-                <option value="$">CAD (Canadian Dollar)</option>
-                <option value="$">AUD (Australian Dollar)</option>
-                <option value="$">SGD (Singapore Dollar)</option>
-                <option value="¥">CNY (Chinese Renminbi)</option>
-                <option value="₿">BTC (Bitcoin)</option>
+                {Object.keys(currencyList.currencyData).map((currency) => {
+                  const currencyData = currencyList.currencyData[currency];
+                  const currencyName = currencyData.name;
+                  const currencyCode = currencyData.code;
+                  const currencySymbol = currencyData.symbol_native;
+                  const optionValue = `${currencyCode}_${currencySymbol}`;
+                  const optionLabel = ` (${currencyCode}) ${currencyName}`;
+                  return <option value={optionValue}>{optionLabel}</option>;
+                })}
               </Form.Select>
             </Form.Group>
             <Form.Group className="my-3">
