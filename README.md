@@ -35,7 +35,7 @@ npm run dev
 
 ## 💻 Demo Video
 
-- [video-link]()
+- [video-link](https://www.loom.com/share/c05a6eb1b3774f0b8b6d146d7d716414?sid=131f0fcf-36da-47b4-b326-6690970222fb)
 
 ## 📸 Screenshots
 
